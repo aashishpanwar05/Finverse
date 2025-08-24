@@ -1,4 +1,4 @@
-require("dotenv").config();
+/*require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -214,4 +214,34 @@ app.listen(PORT, () => {
   console.log("App started!");
   mongoose.connect(uri);
   console.log("DB started!");
-});
+});*/
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+// import your models (keep names as in your repo)
+const { HoldingsModel } = require("./model/HoldingsModel");
+const { PositionsModel } = require("./model/PositionsModel");
+const { OrdersModel } = require("./model/OrdersModel");
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+// MONGO connection
+const uri = process.env.MONGO_URL;
+mongoose
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+// health route
+app.get("/health", (_req, res) => res.json({ status: "ok" }));
+
+// TODO: your other API routes go here
+
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
